@@ -1,0 +1,7 @@
+Engage360d\Bundle\UserBundle\Entity\User\User:
+    exclusion_policy: ALL
+    properties:
+        firstname:
+            expose: true
+        lastname:
+            expose: true

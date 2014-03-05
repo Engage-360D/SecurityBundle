@@ -1,0 +1,76 @@
+{
+    "name": "engage360d/user-bundle",
+    "type": "symfony-bundle",
+    "description": "Engage360dUserBundle",
+    "keywords": ["Engage", "360D"],
+    "homepage": "http://github.com/engage-360d",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrey Linko",
+            "email": "AndreyLinko@gmail.com"
+        }
+    ],
+
+    "autoload": {
+        "psr-0": {
+            "Engage360d\\Bundle\\UserBundle": ""
+        }
+    },
+
+    "minimum-stability": "dev",
+
+    "require": {
+        "symfony/symfony": "2.3.*",
+        "doctrine/orm": ">=2.2.3,<2.4-dev",
+        "doctrine/doctrine-bundle": "1.2.*",
+        "symfony/assetic-bundle": "2.3.*",
+        "symfony/monolog-bundle": "2.3.*",
+        "symfony/swiftmailer-bundle": "2.3.*",
+        "sensio/distribution-bundle": "2.3.*",
+        "sensio/framework-extra-bundle": "2.3.*",
+        "jms/aop-bundle":                       "dev-master",
+        "jms/di-extra-bundle":                  "dev-master",
+        "jms/serializer-bundle":                "dev-master",
+        "jms/translation-bundle":               "dev-master",
+        "jms/security-extra-bundle":            "dev-master",
+        "doctrine/doctrine-fixtures-bundle":    "dev-master",
+        "doctrine/doctrine-migrations-bundle":  "dev-master",
+        "nelmio/api-doc-bundle":                "dev-master",
+        "friendsofsymfony/user-bundle":         "dev-master",
+        "friendsofsymfony/oauth-server-bundle": "dev-master",
+        "friendsofsymfony/jsrouting-bundle":    "dev-master",
+        "friendsofsymfony/rest-bundle":         "dev-master",
+        "friendsofsymfony/rest":                "dev-master",
+        "engage360d/rest-bundle":               "dev-master"
+    },
+
+    "scripts": {
+        "post-install-cmd": [
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
+        ],
+        "post-update-cmd": [
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
+        ]
+    },
+
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Engage-360D/RestBundle.git"
+        }
+    ],
+
+    "target-dir": "Engage360d/Bundle/UserBundle",
+    
+    "extra": {
+        "symfony-app-dir": "Tests/app",
+        "symfony-web-dir": "Tests/app"
+    }
+}

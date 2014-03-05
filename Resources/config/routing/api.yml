@@ -1,0 +1,3 @@
+engage360d_api_users:
+    type:     rest
+    resource: Engage360d\Bundle\UserBundle\Controller\Api\UserController
