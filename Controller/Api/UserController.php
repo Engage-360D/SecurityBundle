@@ -5,10 +5,13 @@
  *
  */
 
-namespace Engage360d\Bundle\UserBundle\Controller\Api;
+namespace Engage360d\Bundle\SecurityBundle\Controller\Api;
 
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Form\Exception\InvalidPropertyPathException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as Controller;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -26,6 +29,31 @@ class UserController extends Controller
      *
      * @ApiDoc(
      *  resource=true,
+     *  description="Получение профайла пользователя",
+     * )
+     * 
+     * @return Array User
+     */
+    public function getMeAction()
+    {
+        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AccessDeniedException();
+        }
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+
+        if (!$user instanceof UserInterface) {
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+
+        return $user;
+    }
+
+    /**
+     *
+     *
+     * @ApiDoc(
+     *  resource=true,
      *  description="Получение списка пользователей.",
      *  filters={
      *      {"name"="limit", "dataType"="integer"},
@@ -37,6 +65,10 @@ class UserController extends Controller
      */
     public function getUsersAction()
     {
+        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AccessDeniedException();
+        }
+
         $limit = $this->container->get('request')->get('limit') ?: 25;
         $page = $this->container->get('request')->get('page') ?: 1;
 
@@ -50,7 +82,7 @@ class UserController extends Controller
      * @ApiDoc(
      *  resource=true,
      *  description="Создание нового пользователя.",
-     *  formType="FOS\UserBundle\Form\Type\PostUserFormType"
+     *  formType="FOS\SecurityBundle\Form\Type\PostUserFormType"
      * )
      *
      * @return User.
@@ -102,7 +134,7 @@ class UserController extends Controller
      * @ApiDoc(
      *  resource=true,
      *  description="Редактирование пользователя.",
-     *  formType="FOS\UserBundle\Form\Type\PutUserFormType"
+     *  formType="FOS\SecurityBundle\Form\Type\PutUserFormType"
      * )
      * @param string $id User id property.
      *

@@ -5,7 +5,7 @@
  *
  */
 
-namespace Engage360d\Bundle\UserBundle\Entity\User;
+namespace Engage360d\Bundle\SecurityBundle\Entity\User;
 
 use Symfony\Component\Security\Core\Role\RoleInterface;
 use Doctrine\Common\Collections\Collection;

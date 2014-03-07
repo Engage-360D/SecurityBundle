@@ -1,23 +1,23 @@
 parameters:
-    engage360d_user.manger.user.class: Engage360d\Bundle\UserBundle\Entity\User\UserManager
-    engage360d_user.entity.user.class: Engage360d\Bundle\UserBundle\Entity\User\User
+    engage360d_security.manger.user.class: Engage360d\Bundle\SecurityBundle\Entity\User\UserManager
+    engage360d_security.entity.user.class: Engage360d\Bundle\SecurityBundle\Entity\User\User
 
 services:
-    engage360d_user.manager.user:
-        class: %engage360d_user.manger.user.class%
+    engage360d_security.manager.user:
+        class: %engage360d_security.manger.user.class%
         arguments:
             - @security.encoder_factory
             - @fos_user.util.username_canonicalizer
             - @fos_user.util.email_canonicalizer
-            - @engage360d_user.entity_manager
-            - %engage360d_user.entity.user.class%
+            - @engage360d_security.entity_manager
+            - %engage360d_security.entity.user.class%
         tags:
             - { name: rest.entity_manager, route: get_users }
             - { name: rest.entity_manager, route: post_users }
             - { name: rest.entity_manager, route: put_users }
             - { name: rest.entity_manager, route: delete_user }
 
-    engage360d_user.entity_manager:
+    engage360d_security.entity_manager:
         class: Doctrine\ORM\EntityManager
         public: false
         factory_service: doctrine

@@ -5,7 +5,7 @@
  *
  */
 
-namespace Engage360d\Bundle\UserBundle\DependencyInjection;
+namespace Engage360d\Bundle\SecurityBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('engage360d_user');
+        $rootNode = $treeBuilder->root('engage360d_security');
 
         return $treeBuilder;
     }

@@ -5,7 +5,7 @@
  *
  */
 
-namespace Engage360d\Bundle\UserBundle\Form\Type;
+namespace Engage360d\Bundle\SecurityBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

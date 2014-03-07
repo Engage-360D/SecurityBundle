@@ -5,10 +5,10 @@
  *
  */
 
-namespace Engage360d\Bundle\UserBundle;
+namespace Engage360d\Bundle\SecurityBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class Engage360dUserBundle extends Bundle
+class Engage360dSecurityBundle extends Bundle
 {}

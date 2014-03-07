@@ -5,7 +5,7 @@
  *
  */
 
-namespace Engage360d\Bundle\UserBundle\Entity\User;
+namespace Engage360d\Bundle\SecurityBundle\Entity\User;
 
 use Doctrine\ORM\EntityManager;
 use FOS\UserBundle\Model\UserInterface;

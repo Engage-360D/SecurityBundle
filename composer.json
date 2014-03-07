@@ -1,7 +1,7 @@
 {
-    "name": "engage360d/user-bundle",
+    "name": "engage360d/security-bundle",
     "type": "symfony-bundle",
-    "description": "Engage360dUserBundle",
+    "description": "Engage360dSecurityBundle",
     "keywords": ["Engage", "360D"],
     "homepage": "http://github.com/engage-360d",
     "license": "MIT",
@@ -14,7 +14,7 @@
 
     "autoload": {
         "psr-0": {
-            "Engage360d\\Bundle\\UserBundle": ""
+            "Engage360d\\Bundle\\SecurityBundle": ""
         }
     },
 
@@ -67,7 +67,7 @@
         }
     ],
 
-    "target-dir": "Engage360d/Bundle/UserBundle",
+    "target-dir": "Engage360d/Bundle/SecurityBundle",
     
     "extra": {
         "symfony-app-dir": "Tests/app",

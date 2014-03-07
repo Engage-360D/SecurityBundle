@@ -66,7 +66,7 @@ jms_serializer:
         directories:            
             FOSUB:
                 namespace_prefix: FOS\UserBundle
-                path: @Engage360dUserBundle/Resources/config/serializer/fos
+                path: @Engage360dSecurityBundle/Resources/config/serializer/fos
 
 sensio_framework_extra:
     view: { annotations: false }
@@ -80,7 +80,16 @@ fos_rest:
     routing_loader:
         default_format: json
 
+fos_oauth_server:
+    service:
+        user_provider: engage360d_security.manager.user
+    db_driver: orm
+    client_class:        Engage360d\Bundle\SecurityBundle\Entity\OAuth\Client
+    access_token_class:  Engage360d\Bundle\SecurityBundle\Entity\OAuth\AccessToken
+    refresh_token_class: Engage360d\Bundle\SecurityBundle\Entity\OAuth\RefreshToken
+    auth_code_class:     Engage360d\Bundle\SecurityBundle\Entity\OAuth\AuthCode
+
 fos_user:
     db_driver: orm
     firewall_name: main
-    user_class: Engage360d\Bundle\UserBundle\Entity\User\User
+    user_class: Engage360d\Bundle\SecurityBundle\Entity\User\User

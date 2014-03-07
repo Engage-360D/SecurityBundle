@@ -1,0 +1,3 @@
+engage360d_success_login:
+    path:      /login_success
+    defaults:  { _controller: Engage360dSecurityBundle:Security:success }

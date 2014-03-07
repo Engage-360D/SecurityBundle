@@ -5,14 +5,14 @@
  *
  */
 
-namespace Engage360d\Bundle\UserBundle\DependencyInjection;
+namespace Engage360d\Bundle\SecurityBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-class Engage360dUserExtension extends Extension
+class Engage360dSecurityExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -22,5 +22,6 @@ class Engage360dUserExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('manager/user.yml');
         $loader->load('form/user.yml');
+        $loader->load('events.yml');
     }
 }

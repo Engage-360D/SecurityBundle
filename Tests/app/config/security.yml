@@ -16,9 +16,31 @@ security:
             id: fos_user.user_provider.username
 
     firewalls:
-        main:
-            pattern: ^/
+        oauth_token:
+            pattern:    ^/oauth/v2/token
+            security:   false
+
+        admin:
+            pattern:    ^/admin|^/oauth/v2/auth|^/api
+            provider:   fos_userbundle
+            fos_oauth:  true
+            anonymous:  true
             form_login:
+                login_path: /admin.html
+                check_path:  /admin/login_check
+                default_target_path: /admin/login_success
                 provider: fos_userbundle
-            logout:       true
-            anonymous:    true
+                use_referer: false
+                use_forward: false
+                failure_path: /admin.html
+                failure_forward: true
+                always_use_default_target_path: true
+                post_only: true
+            logout:
+                path:   /admin/logout
+                target: /admin.html
+                invalidate_session: true
+
+    access_control:
+        - { path: ^/api, roles: [ IS_AUTHENTICATED_ANONYMOUSLY ] }
+        - { path: ^/oauth/v2/auth, roles: [ IS_AUTHENTICATED_FULLY ] }

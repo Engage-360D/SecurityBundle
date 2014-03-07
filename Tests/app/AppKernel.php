@@ -29,11 +29,12 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new FOS\RestBundle\FOSRestBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
+            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             
             new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle(),
             new Sensio\Bundle\DistributionBundle\SensioDistributionBundle(),
             new Engage360d\Bundle\RestBundle\Engage360dRestBundle(),
-            new Engage360d\Bundle\UserBundle\Engage360dUserBundle(),
+            new Engage360d\Bundle\SecurityBundle\Engage360dSecurityBundle(),
         );
 
         return $bundles;

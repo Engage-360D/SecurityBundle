@@ -1,4 +1,4 @@
-Engage360d\Bundle\UserBundle\Entity\User\User:
+Engage360d\Bundle\SecurityBundle\Entity\User\User:
     exclusion_policy: ALL
     properties:
         firstname:
