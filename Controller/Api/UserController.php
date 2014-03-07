@@ -29,7 +29,7 @@ class UserController extends Controller
      *
      * @ApiDoc(
      *  resource=true,
-     *  description="Получение профайла пользователя",
+     *  description="Получение профайла пользователя"
      * )
      * 
      * @return Array User
