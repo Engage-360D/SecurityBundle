@@ -38,6 +38,6 @@ class PutUserFormType extends AbstractType
 
     public function getName()
     {
-        return 'engage360d_user_put_user';
+        return 'engage360d_security_put_user';
     }
 }

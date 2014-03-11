@@ -47,6 +47,6 @@ class PostUserFormType extends AbstractType
 
     public function getName()
     {
-        return 'engage360d_user_post_user';
+        return 'engage360d_security_post_user';
     }
 }

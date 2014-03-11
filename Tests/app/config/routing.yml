@@ -14,11 +14,11 @@ NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /api/doc
 
-engage360d_user_api:
+engage360d_security_api:
     resource: "@Engage360dSecurityBundle/Resources/config/routing/api.yml"
     prefix:   /api
 
-engage360d_user_security:
+engage360d_security_security:
     resource: "@Engage360dSecurityBundle/Resources/config/routing/security.yml"
     prefix:   /admin
 

@@ -1,5 +1,5 @@
 services:
-    engage360d_user.oauth_event_listener:
+    engage360d_security.oauth_event_listener:
         class:  Engage360d\Bundle\SecurityBundle\EventListener\OAuthEventListener
         tags:
             - { name: kernel.event_listener, event: fos_oauth_server.pre_authorization_process, method: onPreAuthorizationProcess }
