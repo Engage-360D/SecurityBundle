@@ -1,0 +1,7 @@
+services:
+  engage360d_security.facebook.provider:
+    class: Engage360d\Bundle\SecurityBundle\Security\User\Provider\FacebookProvider
+    arguments:
+      facebook: @fos_facebook.api
+      userManager: @engage360d_security.manager.user
+      validator: @validator

@@ -23,5 +23,6 @@ class Engage360dSecurityExtension extends Extension
         $loader->load('manager/user.yml');
         $loader->load('form/user.yml');
         $loader->load('events.yml');
+        $loader->load('security.yml');
     }
 }

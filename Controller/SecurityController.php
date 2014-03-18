@@ -34,4 +34,16 @@ class SecurityController extends Controller
         
         return $response;
     }
+
+    public function checkFacebookAction()
+    {
+    }
+
+    public function loginFacebookAction()
+    {
+    }
+
+    public function connectFacebookWithAccountAction()
+    {
+    }
 }

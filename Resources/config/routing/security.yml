@@ -1,3 +1,15 @@
 engage360d_success_login:
-    path:      /login_success
+    path:      /admin_success
     defaults:  { _controller: Engage360dSecurityBundle:Security:success }
+
+_engage360d_facebook_check:
+  pattern: /facebook_check
+  defaults:  { _controller: Engage360dSecurityBundle:Security:checkFacebook }
+
+_engage360d_facebook_login:
+  pattern: /facebook_login
+  defaults:  { _controller: Engage360dSecurityBundle:Security:loginFacebook }
+
+_engage360d_facebook_account_append:
+  pattern: /facebook_append
+  defaults:  { _controller: Engage360dSecurityBundle:Security:connectFacebookWithAccount }

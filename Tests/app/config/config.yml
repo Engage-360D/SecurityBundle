@@ -93,3 +93,11 @@ fos_user:
     db_driver: orm
     firewall_name: main
     user_class: Engage360d\Bundle\SecurityBundle\Entity\User\User
+
+fos_facebook:
+    alias:  facebook
+    app_id: 245182945513174
+    secret: e045e253cdb441ede774a11ddc9866b6
+    cookie: true
+    permissions: [email, user_birthday, user_location]
+

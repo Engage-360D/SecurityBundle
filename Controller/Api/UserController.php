@@ -14,8 +14,12 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as Controller;
+use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use JMS\SecurityExtraBundle\Annotation\Secure;
+use Engage360d\Bundle\SecurityBundle\Engage360dSecurityEvents;
+use Engage360d\Bundle\SecurityBundle\Event\FormEvent;
 
 /**
  * Rest controller для работы с пользователями (users).
@@ -85,9 +89,16 @@ class UserController extends Controller
      *  formType="FOS\SecurityBundle\Form\Type\PostUserFormType"
      * )
      *
+     * @QueryParam(
+     *  name="confirmation",
+     *  requirements="\d+",
+     *  default="1",
+     *  description="Confirm registration."
+     * )
+     * 
      * @return User.
      */
-    public function postUsersAction()
+    public function postUsersAction($confirmation)
     {
         $formFactory = $this->container->get('engage360d_rest.form.factory');
         $userManager = $this->container
@@ -95,7 +106,7 @@ class UserController extends Controller
             ->getEntityManagerByRoute($this->getRequest()->get('_route'));
 
         $user = $userManager->createUser();
-        $user->setEnabled(true);
+        $user->setEnabled(false);
 
         $form = $formFactory->createFormByRoute(
             $this->getRequest()->get('_route')
@@ -107,6 +118,13 @@ class UserController extends Controller
 
         if (!$form->isValid()) {
             throw new HttpException(400, "User not valid.");
+        }
+
+        if ($confirmation == '1') {
+          $dispatcher = $this->container->get('event_dispatcher');
+
+          $event = new FormEvent($form);
+          $dispatcher->dispatch(Engage360dSecurityEvents::REGISTRATION_SUCCESS, $event);
         }
 
         $userManager->updateUser($user);

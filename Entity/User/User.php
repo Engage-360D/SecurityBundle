@@ -37,6 +37,13 @@ class User extends BaseUser
      */
     protected $lastname;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="facebookId", type="string", length=255, nullable=true)
+     */
+    protected $facebookId;
+
     public function __construct()
     {
         parent::__construct();
@@ -85,5 +92,51 @@ class User extends BaseUser
         }
 
         return $this->getUsername();
+    }
+
+    /**
+     * FacebookId
+     * @return void
+     */
+    public function setFacebookId($facebookId)
+    {
+        $this->facebookId = $facebookId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFacebookId()
+    {
+        return $this->facebookId;
+    }
+
+    public function setFBData($fbdata)
+    {
+        if (isset($fbdata['id'])) {
+            $this->setFacebookId($fbdata['id']);
+            $this->addRole('ROLE_FACEBOOK');
+        }
+        if (isset($fbdata['first_name'])) {
+            $this->setFirstname($fbdata['first_name']);
+        }
+        if (isset($fbdata['last_name'])) {
+            $this->setLastname($fbdata['last_name']);
+        }
+        if (isset($fbdata['email'])) {
+            $this->setEmail($fbdata['email']);
+            $this->setUsername($fbdata['email']);
+        }
+    }
+
+    public function serialize()
+    {
+        return serialize(array($this->facebookId, parent::serialize()));
+    }
+
+    public function unserialize($data)
+    {
+        list($this->facebookId, $parentData) = unserialize($data);
+        parent::unserialize($parentData);
     }
 }

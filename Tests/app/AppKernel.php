@@ -27,6 +27,7 @@ class AppKernel extends Kernel
             
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new FOS\FacebookBundle\FOSFacebookBundle(),
             new FOS\RestBundle\FOSRestBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
