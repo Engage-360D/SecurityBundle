@@ -38,7 +38,7 @@ class UserController extends Controller
      * 
      * @return Array User
      */
-    public function getMeAction()
+    public function getUsersMeAction()
     {
         if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
             throw new AccessDeniedException();
@@ -69,7 +69,8 @@ class UserController extends Controller
      */
     public function getUsersAction()
     {
-        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
+          && false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException();
         }
 
@@ -143,8 +144,13 @@ class UserController extends Controller
      */
     public function getUserAction($id)
     {
+        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
+          && false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException();
+        }
+
         return $this->container
-            ->get('engage360d_rest.manager.user')
+            ->get('engage360d_security.manager.user')
             ->findById($id);
     }
 
@@ -160,6 +166,17 @@ class UserController extends Controller
      */
     public function putUsersAction($id)
     {
+        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AccessDeniedException();
+        }
+
+        if (false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            $user = $this->container->get('security.context')->getToken()->getUser();
+            if ($user.getId() !== $id) {
+                throw new AccessDeniedException();
+            }
+        }
+
         $formFactory = $this->container->get('engage360d_rest.form.factory');
         $userManager = $this->container
             ->get('engage360d_rest.entity_manager.factory')
@@ -195,6 +212,11 @@ class UserController extends Controller
      */
     public function deleteUserAction($id)
     {
+        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
+          && false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException();
+        }
+
         $userManager = $this->container
             ->get('engage360d_rest.entity_manager.factory')
             ->getEntityManagerByRoute($this->getRequest()->get('_route'));
