@@ -1,6 +1,5 @@
 parameters:
     engage360d_security.manger.user.class: Engage360d\Bundle\SecurityBundle\Entity\User\UserManager
-    engage360d_security.entity.user.class: Engage360d\Bundle\SecurityBundle\Entity\User\User
 
 services:
     engage360d_security.manager.user:

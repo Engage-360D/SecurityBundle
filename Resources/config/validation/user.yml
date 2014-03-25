@@ -1,0 +1,10 @@
+Engage360d\Bundle\SecurityBundle\Entity\User\User:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [usernameCanonical]
+            errorPath: username
+            message: 'Username not unique.'
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [emailCanonical]
+            errorPath: email
+            message: 'Email not unique.'

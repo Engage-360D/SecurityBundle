@@ -24,5 +24,10 @@ class Engage360dSecurityExtension extends Extension
         $loader->load('form/user.yml');
         $loader->load('events.yml');
         $loader->load('security.yml');
+
+        $container->setParameter(
+          'engage360d_security.entity.user.class',
+          $container->getParameter('fos_user.model.user.class')
+        );
     }
 }

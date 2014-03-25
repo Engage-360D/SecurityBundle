@@ -12,12 +12,13 @@ use Symfony\Component\Form\Exception\InvalidPropertyPathException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as Controller;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use JMS\SecurityExtraBundle\Annotation\Secure;
+use Engage360d\Bundle\RestBundle\Controller\RestController;
 use Engage360d\Bundle\SecurityBundle\Engage360dSecurityEvents;
 use Engage360d\Bundle\SecurityBundle\Event\FormEvent;
 
@@ -26,7 +27,7 @@ use Engage360d\Bundle\SecurityBundle\Event\FormEvent;
  *
  * @author Andrey Linko <AndreyLinko@gmail.com>
  */
-class UserController extends Controller
+class UserController extends RestController
 {
     /**
      *
@@ -118,7 +119,7 @@ class UserController extends Controller
         $form->bind($this->getRequest()->request->all());
 
         if (!$form->isValid()) {
-            throw new HttpException(400, "User not valid.");
+            return new JsonResponse($this->getErrorMessages($form), 400);
         }
 
         if ($confirmation == '1') {
@@ -194,7 +195,7 @@ class UserController extends Controller
         $form->bind($this->getRequest()->request->all());
 
         if (!$form->isValid()) {
-            throw new HttpException(400, "User not valid.");
+            return new JsonResponse($this->getErrorMessages($form), 400);
         }
 
         $userManager->updateUser($user);
