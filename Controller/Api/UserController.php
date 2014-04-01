@@ -173,7 +173,7 @@ class UserController extends RestController
 
         if (false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
             $user = $this->container->get('security.context')->getToken()->getUser();
-            if ($user.getId() !== $id) {
+            if ($user->getId() !== $id) {
                 throw new AccessDeniedException();
             }
         }

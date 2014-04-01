@@ -20,5 +20,5 @@ services:
         class: Doctrine\ORM\EntityManager
         public: false
         factory_service: doctrine
-        factory_method: getEntityManager
+        factory_method: getManager
         arguments: [ ] 

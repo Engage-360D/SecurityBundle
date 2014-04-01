@@ -23,16 +23,7 @@ class SecurityController extends Controller
 {
     public function successAction()
     {
-        $clientManager = $this->container->get('fos_oauth_server.client_manager.default');
-        $client = $clientManager->createClient();
-        $client->setRedirectUris(array('/admin'));
-        $client->setAllowedGrantTypes(array('token', 'authorization_code'));
-        $clientManager->updateClient($client);
-
-        $response = new Response(json_encode(array('client_id' => $client->getPublicId())));
-        $response->headers->set('Content-Type', 'application/json');
-        
-        return $response;
+        return new Response();
     }
 
     public function checkFacebookAction()
