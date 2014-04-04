@@ -21,6 +21,8 @@ class User extends BaseUser
     protected $lastname;
 
     protected $facebookId;
+
+    protected $facebook_access_token;
     
     public function getFirstname()
     {
@@ -61,7 +63,7 @@ class User extends BaseUser
         return $this->facebookId;
     }
 
-    public function setFBData($fbdata)
+    public function setFacebookData($fbdata)
     {
         if (isset($fbdata['id'])) {
             $this->setFacebookId($fbdata['id']);
@@ -77,6 +79,16 @@ class User extends BaseUser
             $this->setEmail($fbdata['email']);
             $this->setUsername($fbdata['email']);
         }
+    }
+
+    public function setFacebookAccessToken($token)
+    {
+        $this->facebook_access_token = $token;
+    }
+
+    public function getFacebookAccessToken()
+    {
+        return $this->facebook_access_token;
     }
 
     public function serialize()
