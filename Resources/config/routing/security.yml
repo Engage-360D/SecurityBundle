@@ -1,3 +1,7 @@
 engage360d_security_user_connect:
   pattern: /connect
   defaults:  { _controller: Engage360dSecurityBundle:Security:connect }
+
+engage360d_success_login:
+    path:      /admin_success
+    defaults:  { _controller: Engage360dSecurityBundle:Security:success }

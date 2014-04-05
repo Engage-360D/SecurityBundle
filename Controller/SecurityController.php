@@ -78,4 +78,9 @@ class SecurityController extends ConnectController
 
         return $user;
     }
+
+    public function successAction()
+    {
+        return new Response();
+    }
 }
