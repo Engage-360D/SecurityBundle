@@ -9,6 +9,7 @@ namespace Engage360d\Bundle\SecurityBundle\Security\User\Provider;
 
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider;
+use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -35,6 +36,7 @@ class OAuthProvider extends FOSUBUserProvider
      */
     public function connect(UserInterface $user, UserResponseInterface $response)
     {
+        var_dump($user); die;
         $property = $this->getProperty($response);
         $username = $response->getUsername();
  
@@ -65,32 +67,12 @@ class OAuthProvider extends FOSUBUserProvider
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
         $username = $response->getUsername();
+
         $user = $this->userManager->findUserBy(array($this->getProperty($response) => $username));
-
-        if (null === $user) {
-            $service = $response->getResourceOwner()->getName();
-            $setter = 'set'.ucfirst($service);
-            $setter_token = $setter . 'AccessToken';
-            $setter_data = $setter . 'Data'; 
-
-            $user = $this->userManager->createUser();
-            $user->$setter_data($response->getResponse());
-            $user->$setter_token($response->getAccessToken());
-
-            $user->setEnabled(true);
-            $this->userManager->updateUser($user);
-            return $user;
+        if (null === $user || null === $username) {
+            throw new AccountNotLinkedException(sprintf("User '%s' not found.", $username));
         }
- 
-        //if user exists - go with the HWIOAuth way
-        $user = parent::loadUserByOAuthUserResponse($response);
- 
-        $serviceName = $response->getResourceOwner()->getName();
-        $setter = 'set' . ucfirst($serviceName) . 'AccessToken';
- 
-        //update access token
-        $user->$setter($response->getAccessToken());
- 
+
         return $user;
     }
 

@@ -11,6 +11,8 @@
         <field name="lastname" column="lastname" type="string" length="255" nullable="true" />
 
         <field name="facebookId" column="facebook_id" type="string" length="255" nullable="true" />
+        
+        <field name="facebookAccessToken" column="facebook_access_token" type="string" length="255" nullable="true" />
 
     </mapped-superclass>
 

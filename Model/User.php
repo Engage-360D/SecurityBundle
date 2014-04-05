@@ -22,7 +22,7 @@ class User extends BaseUser
 
     protected $facebookId;
 
-    protected $facebook_access_token;
+    protected $facebookAccessToken;
     
     public function getFirstname()
     {
@@ -83,12 +83,12 @@ class User extends BaseUser
 
     public function setFacebookAccessToken($token)
     {
-        $this->facebook_access_token = $token;
+        $this->facebookAccessToken = $token;
     }
 
     public function getFacebookAccessToken()
     {
-        return $this->facebook_access_token;
+        return $this->facebookAccessToken;
     }
 
     public function serialize()
