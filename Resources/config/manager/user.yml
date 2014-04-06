@@ -15,6 +15,7 @@ services:
             - { name: rest.entity_manager, route: post_users }
             - { name: rest.entity_manager, route: put_users }
             - { name: rest.entity_manager, route: delete_user }
+            - { name: rest.entity_manager, route: post_users_reset }
 
     engage360d_security.entity_manager:
         class: Doctrine\ORM\EntityManager
