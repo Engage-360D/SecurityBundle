@@ -33,6 +33,8 @@ use HWI\Bundle\OAuthBundle\Controller\ConnectController;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\VkontakteResourceOwner;
 use HWI\Bundle\OAuthBundle\OAuth\ResourceOwner\FacebookResourceOwner;
 
+// Todo: Move to TakedaUserBundle
+
 /**
  * Process form auth to oauth.
  *
@@ -57,6 +59,58 @@ class SecurityController extends ConnectController
               $responseOwner->getUserInformation($error->getRawToken())
             )
         ));
+    }
+    
+    /**
+     * Connects a user to a given account if the user is logged in and connect is enabled.
+     *
+     * @param Request $request The active request.
+     * @param string  $service Name of the resource owner to connect to.
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     *
+     * @throws NotFoundHttpException if `connect` functionality was not enabled
+     * @throws AccessDeniedException if no user is authenticated
+     */
+    public function connectServiceAction(Request $request, $service)
+    {
+        $hasUser = $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED');
+        if (!$hasUser) {
+            //redirect to register
+            throw new AccessDeniedException('Cannot connect an account.');
+        }
+
+        // Get the data from the resource owner
+        $resourceOwner = $this->getResourceOwnerByName($service);
+
+        $session = $request->getSession();
+        $key = $request->query->get('key', time());
+
+        if ($resourceOwner->handles($request)) {
+            $accessToken = $resourceOwner->getAccessToken(
+                $request,
+                $this->generate('hwi_oauth_connect_service', array('service' => $service), true)
+            );
+
+            // save in session
+            $session->set('_hwi_oauth.connect_confirmation.'.$key, $accessToken);
+        } else {
+            $accessToken = $session->get('_hwi_oauth.connect_confirmation.'.$key);
+        }
+
+        $userInformation = $resourceOwner->getUserInformation($accessToken);
+
+        $currentToken = $this->container->get('security.context')->getToken();
+        $currentUser  = $currentToken->getUser();
+
+        $this->container
+            ->get('engage360d_security.oauth.provider')
+            ->connect($currentUser, $userInformation);
+
+        $url = $this->container->get('router')->generate('engage360d_takeda_user_modal_login_success');
+        return new RedirectResponse($url);
     }
     
     protected function getUserByResourceOwner($resourceOwner, $userInformation)

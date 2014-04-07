@@ -36,7 +36,6 @@ class OAuthProvider extends FOSUBUserProvider
      */
     public function connect(UserInterface $user, UserResponseInterface $response)
     {
-        var_dump($user); die;
         $property = $this->getProperty($response);
         $username = $response->getUsername();
  
