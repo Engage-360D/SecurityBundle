@@ -67,10 +67,8 @@ class SecurityController extends ConnectController
         );
 
         if ($resourceOwner instanceof FacebookResourceOwner) {
-            $birthday = \DateTime::createFromFormat('d/m/Y' , $response['birthday']);
             $user['facebookId'] = $userInformation->getUsername();
             $user['firstname'] = $response['first_name'];
-            $user['birthday'] = $birthday->format('Y-m-d');
         } else if ($resourceOwner instanceof VkontakteResourceOwner) {
             $user['vkontakteId'] = $userInformation->getUsername();
             $user['firstname'] = $response['response'][0]['first_name'];
