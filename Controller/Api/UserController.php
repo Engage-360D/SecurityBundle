@@ -59,7 +59,7 @@ class UserController extends RestController
 
     /**
      *
-     *
+     * @Post("/users/reset")
      * @ApiDoc(
      *  resource=true,
      *  description="Сброс пароля пользователя"
