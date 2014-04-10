@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\RestBundle\Controller\Annotations\Post;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Engage360d\Bundle\RestBundle\Controller\RestController;
@@ -78,11 +79,11 @@ class UserController extends RestController
             ->findUserByUsernameOrEmail($username);
 
         if (null === $user) {
-            return new JsonResponse(array('error' => 'User not found'), 400);
+            return new JsonResponse(array('error' => 'User not found'), 500);
         }
 
         if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
-            return new JsonResponse(array('error' => 'Password already requested'), 400);
+            return new JsonResponse(array('error' => 'Password already requested'), 500);
         }
 
         if (null === $user->getConfirmationToken()) {
@@ -98,6 +99,55 @@ class UserController extends RestController
         $user->setPasswordRequestedAt(new \DateTime());
         $userManager->updateUser($user);
 
+        return array();
+    }
+
+    /**
+     *
+     * @Post("/users/reset/{token}")
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Изменение пароля пользователя"
+     * )
+     * 
+     * @return Array User
+     */
+    public function putUsersResetAction(Request $request, $token)
+    {
+        $formFactory = $this->container->get('engage360d_rest.form.factory');
+        $userManager = $this->container
+            ->get('engage360d_rest.entity_manager.factory')
+            ->getEntityManagerByRoute($this->getRequest()->get('_route'));
+
+        $user = $userManager->findUserByConfirmationToken($token);
+
+        if (null === $user) {
+            return new JsonResponse(array('error' => 'Token not found'), 500);
+        }
+
+        $form = $formFactory->createFormByRoute(
+            $this->getRequest()->get('_route')
+        );
+
+        $form->setData($user);
+
+        $form->bind($this->getRequest()->request->all());
+
+        if (!$form->isValid()) {
+            return new JsonResponse($this->getErrorMessages($form), 500);
+        }
+
+        $user->setConfirmationToken(null);
+        $user->setPasswordRequestedAt(null);
+        $user->setEnabled(true);
+
+        $userManager->updateUser($user);
+        
+        $dispatcher = $this->container->get('event_dispatcher');
+
+        $event = new UserEvent($user);
+        $dispatcher->dispatch(Engage360dSecurityEvents::RESET_USER_PASSWORD_SUCCESS, $event);
+        
         return array();
     }
 
@@ -140,14 +190,19 @@ class UserController extends RestController
      *
      * @QueryParam(
      *  name="confirmation",
-     *  requirements="\d+",
-     *  default="1",
+     *  default=true,
      *  description="Confirm registration."
+     * )
+     * 
+     * @QueryParam(
+     *  name="authenticate",
+     *  default=true,
+     *  description="Authenticate user."
      * )
      * 
      * @return User.
      */
-    public function postUsersAction($confirmation = '1')
+    public function postUsersAction($confirmation = true, $authenticate = true)
     {
         $formFactory = $this->container->get('engage360d_rest.form.factory');
         $userManager = $this->container
@@ -166,10 +221,10 @@ class UserController extends RestController
         $form->bind($this->getRequest()->request->all());
 
         if (!$form->isValid()) {
-            return new JsonResponse($this->getErrorMessages($form), 400);
+            return new JsonResponse($this->getErrorMessages($form), 500);
         }
 
-        if ($confirmation == '1') {
+        if ($confirmation == 'true') {
           $dispatcher = $this->container->get('event_dispatcher');
 
           $user = $form->getData();
@@ -179,7 +234,7 @@ class UserController extends RestController
               $user->setConfirmationToken($tokenGenerator->generateToken());
           }
 
-          $event = new UserEvent($user);
+          $event = new UserEvent($user, $authenticate == 'true');
           $dispatcher->dispatch(Engage360dSecurityEvents::REGISTRATION_SUCCESS, $event);
         }
 
@@ -227,7 +282,7 @@ class UserController extends RestController
 
         if (false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
             $user = $this->container->get('security.context')->getToken()->getUser();
-            if ($user->getId() !== $id) {
+            if ($user->getId() != $id) {
                 throw new AccessDeniedException();
             }
         }
@@ -249,7 +304,7 @@ class UserController extends RestController
         $form->bind($this->getRequest()->request->all());
 
         if (!$form->isValid()) {
-            return new JsonResponse($this->getErrorMessages($form), 400);
+            return new JsonResponse($this->getErrorMessages($form), 500);
         }
 
         $userManager->updateUser($user);

@@ -12,11 +12,19 @@ use FOS\UserBundle\Model\UserInterface;
 
 class UserEvent extends Event
 {
+    private $authenticate;
+
     private $user;
 
-    public function __construct(UserInterface $user)
+    public function __construct(UserInterface $user, $authenticate = true)
     {
+        $this->authenticate = $authenticate;
         $this->user = $user;
+    }
+
+    public function isAuthenticate()
+    {
+        return $this->authenticate;
     }
 
     public function getUser()

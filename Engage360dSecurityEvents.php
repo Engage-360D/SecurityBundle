@@ -14,4 +14,5 @@ final class Engage360dSecurityEvents
 {
     const REGISTRATION_SUCCESS = 'engage360d_security.registration.success';
     const RESETTING_USER_PASSWORD = 'engage360d_security.resetting.user.password';
+    const RESET_USER_PASSWORD_SUCCESS = 'engage360d_security.reset.user.password.success';
 }

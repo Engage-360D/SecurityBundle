@@ -28,3 +28,17 @@ services:
         arguments: [%engage360d_security.entity.user.class%]
         tags:
             - { name: form.type, alias: engage360d_security_put_user }
+
+    engage360d_security.form.reset_password:
+        factory_service: form.factory
+        factory_method: createNamed
+        class: Symfony\Component\Form\Form
+        arguments: ["user", "engage360d_security_reset_password", null, { }]
+        tags:
+            - { name: rest.form, route: put_users_reset }
+
+    engage360d_security.form.reset_password.type:
+        class: Engage360d\Bundle\SecurityBundle\Form\Type\ResetPasswordFormType
+        arguments: [%engage360d_security.entity.user.class%]
+        tags:
+            - { name: form.type, alias: engage360d_security_reset_password }
