@@ -11,6 +11,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Form\Exception\InvalidPropertyPathException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,13 +40,13 @@ class UserController extends RestController
      *  resource=true,
      *  description="Получение профайла пользователя"
      * )
-     * 
+     *
      * @return Array User
      */
     public function getUsersMeAction()
     {
         if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            throw new AccessDeniedException();
+            throw new AuthenticationException('Unauthorized');
         }
 
         $user = $this->container->get('security.context')->getToken()->getUser();
@@ -64,7 +65,7 @@ class UserController extends RestController
      *  resource=true,
      *  description="Сброс пароля пользователя"
      * )
-     * 
+     *
      * @return Array User
      */
     public function postUsersResetAction(Request $request)
@@ -74,12 +75,12 @@ class UserController extends RestController
         $userManager = $this->container
             ->get('engage360d_rest.entity_manager.factory')
             ->getEntityManagerByRoute($this->getRequest()->get('_route'));
-        
+
         $user = $userManager
             ->findUserByUsernameOrEmail($username);
 
         if (null === $user) {
-            return new JsonResponse(array('error' => 'User not found'), 500);
+            return new JsonResponse(array('error' => 'User not found'), 404);
         }
 
         if ($user->isPasswordRequestNonExpired($this->container->getParameter('fos_user.resetting.token_ttl'))) {
@@ -109,7 +110,7 @@ class UserController extends RestController
      *  resource=true,
      *  description="Изменение пароля пользователя"
      * )
-     * 
+     *
      * @return Array User
      */
     public function putUsersResetAction(Request $request, $token)
@@ -122,7 +123,7 @@ class UserController extends RestController
         $user = $userManager->findUserByConfirmationToken($token);
 
         if (null === $user) {
-            return new JsonResponse(array('error' => 'Token not found'), 500);
+            return new JsonResponse(array('error' => 'Token not found'), 404);
         }
 
         $form = $formFactory->createFormByRoute(
@@ -134,7 +135,7 @@ class UserController extends RestController
         $form->bind($this->getRequest()->request->all());
 
         if (!$form->isValid()) {
-            return new JsonResponse($this->getErrorMessages($form), 500);
+            return new JsonResponse($this->getErrorMessages($form), 400);
         }
 
         $user->setConfirmationToken(null);
@@ -142,12 +143,12 @@ class UserController extends RestController
         $user->setEnabled(true);
 
         $userManager->updateUser($user);
-        
+
         $dispatcher = $this->container->get('event_dispatcher');
 
         $event = new UserEvent($user);
         $dispatcher->dispatch(Engage360dSecurityEvents::RESET_USER_PASSWORD_SUCCESS, $event);
-        
+
         return array();
     }
 
@@ -162,14 +163,17 @@ class UserController extends RestController
      *      {"name"="page", "dataType"="integer"}
      *  }
      * )
-     * 
+     *
      * @return Array Users
      */
     public function getUsersAction()
     {
-        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
-          && false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
-            throw new AccessDeniedException();
+        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AuthenticationException('Unauthorized');
+        }
+
+        if (false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Forbidden');
         }
 
         $limit = $this->container->get('request')->get('limit') ?: 25;
@@ -193,13 +197,13 @@ class UserController extends RestController
      *  default=true,
      *  description="Confirm registration."
      * )
-     * 
+     *
      * @QueryParam(
      *  name="authenticate",
      *  default=true,
      *  description="Authenticate user."
      * )
-     * 
+     *
      * @return User.
      */
     public function postUsersAction($confirmation = true, $authenticate = true)
@@ -221,7 +225,7 @@ class UserController extends RestController
         $form->bind($this->getRequest()->request->all());
 
         if (!$form->isValid()) {
-            return new JsonResponse($this->getErrorMessages($form), 500);
+            return new JsonResponse($this->getErrorMessages($form), 400);
         }
 
         if ($confirmation == 'true') {
@@ -254,9 +258,12 @@ class UserController extends RestController
      */
     public function getUserAction($id)
     {
-        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
-          && false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
-            throw new AccessDeniedException();
+        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AuthenticationException('Unauthorized');
+        }
+
+        if (false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Forbidden');
         }
 
         return $this->container
@@ -277,13 +284,13 @@ class UserController extends RestController
     public function putUsersAction($id)
     {
         if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            throw new AccessDeniedException();
+            throw new AuthenticationException('Unauthorized');
         }
 
         if (false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
             $user = $this->container->get('security.context')->getToken()->getUser();
             if ($user->getId() != $id) {
-                throw new AccessDeniedException();
+                throw new AccessDeniedException('Forbidden');
             }
         }
 
@@ -304,7 +311,7 @@ class UserController extends RestController
         $form->bind($this->getRequest()->request->all());
 
         if (!$form->isValid()) {
-            return new JsonResponse($this->getErrorMessages($form), 500);
+            return new JsonResponse($this->getErrorMessages($form), 400);
         }
 
         $userManager->updateUser($user);
@@ -322,9 +329,12 @@ class UserController extends RestController
      */
     public function deleteUserAction($id)
     {
-        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
-          && false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
-            throw new AccessDeniedException();
+        if (false === $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AuthenticationException('Unauthorized');
+        }
+
+        if (false === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            throw new AccessDeniedException('Forbidden');
         }
 
         $userManager = $this->container
