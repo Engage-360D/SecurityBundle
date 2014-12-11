@@ -60,7 +60,7 @@ class UserController extends RestController
 
     /**
      *
-     * @Post("/users/reset")
+     * @Post("/users/{id}/reset-password")
      * @ApiDoc(
      *  resource=true,
      *  description="Сброс пароля пользователя"
@@ -68,16 +68,14 @@ class UserController extends RestController
      *
      * @return Array User
      */
-    public function postUsersResetAction(Request $request)
+    public function postUsersResetAction(Request $request, $id)
     {
-        $username = $request->request->get('username');
-
         $userManager = $this->container
             ->get('engage360d_rest.entity_manager.factory')
             ->getEntityManagerByRoute($this->getRequest()->get('_route'));
 
-        $user = $userManager
-            ->findUserByUsernameOrEmail($username);
+        $user = $this->get('doctrine')->getRepository('Engage360dSecurityBundle:User\User')
+            ->findOneBy(array('id' => $id));
 
         if (null === $user) {
             return new JsonResponse(array('error' => 'User not found'), 404);
