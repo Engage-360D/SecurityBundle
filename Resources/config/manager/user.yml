@@ -17,10 +17,12 @@ services:
             - { name: rest.entity_manager, route: delete_user }
             - { name: rest.entity_manager, route: post_users_reset }
             - { name: rest.entity_manager, route: put_users_reset }
+            - { name: rest.entity_manager, route: put_account }
+            - { name: rest.entity_manager, route: post_account_reset_password }
 
     engage360d_security.entity_manager:
         class: Doctrine\ORM\EntityManager
         public: false
         factory_service: doctrine
         factory_method: getManager
-        arguments: [ ] 
+        arguments: [ ]
